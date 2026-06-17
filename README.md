@@ -41,37 +41,38 @@ The hardware wiring is designed specifically for the standard **ESP32-WROOM-32**
 
 ## 📐 Firmware Pipeline Architecture
 
-By avoiding FreeRTOS multi-threading primitives (Queues, Semaphores, Mutexes), the entire pipeline operates safely without any thread contention:
-+------------------------------------------------------------------------+
-|                      Infinite Loop: task_pcg_all_in_one                |
-+------------------------------------------------------------------------+
-|
-v
-+--------------------------------------------------+
-| 1. i2s_channel_read() (Blocking ~2.5ms)          |
-|    - Waits for hardware DMA to collect 40 samples|
-+--------------------------------------------------+
-|
-v
-+--------------------------------------------------+
-| 2. Edge-Validation Logic                         |
-|    - Checks if |actual_count - 40| <= 2          |
-|    - Increments good_count or bad_count flags    |
-+--------------------------------------------------+
-|
-v
-+--------------------------------------------------+
-| 3. Serial Plotter Stream (UART @921600 Baud)     |
-|    - Formats: PCG:[scaled_val]  SYNC_OK:[1/0]     |
-+--------------------------------------------------+
-|
-v
-+--------------------------------------------------+
-| 4. Batch Buffer Accumulation                     |
-|    - Converts raw data to 40-column CSV format   |
-|    - Triggers fwrite() to SD card every 50 blocks|
-+--------------------------------------------------+
----
+By avoiding FreeRTOS multi-threading primitives (Queues, Semaphores, Mutexes), the entire pipeline operates safely without any thread contention or layout breakage:
+
+```text
+========================================================================
+                 Infinite Loop: task_pcg_all_in_one
+========================================================================
+                               |
+                               v
+       +-----------------------------------------------+
+       | 1. i2s_channel_read() (Blocking ~2.5ms)       |
+       |    - Waits for hardware DMA for 40 samples    |
+       +-----------------------------------------------+
+                               |
+                               v
+       +-----------------------------------------------+
+       | 2. Edge-Validation Logic                      |
+       |    - Checks if |actual_count - 40| <= 2       |
+       |    - Increments good_count / bad_count flags  |
+       +-----------------------------------------------+
+                               |
+                               v
+       +-----------------------------------------------+
+       | 3. Serial Plotter Stream (UART @921600 Baud)  |
+       |    - Formats: PCG:[scaled_val]  SYNC_OK:[1/0] |
+       +-----------------------------------------------+
+                               |
+                               v
+       +-----------------------------------------------+
+       | 4. Batch Buffer Accumulation                  |
+       |    - Converts raw data to 40-column CSV style |
+       |    - Triggers fwrite() to SD every 50 blocks  |
+       +-----------------------------------------------+
 
 ## 📊 Data & Output Visualization
 
