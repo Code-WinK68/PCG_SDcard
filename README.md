@@ -43,7 +43,7 @@ The hardware wiring is designed specifically for the standard **ESP32-WROOM-32**
 
 By avoiding FreeRTOS multi-threading primitives (Queues, Semaphores, Mutexes), the entire pipeline operates safely without any thread contention or layout breakage:
 
--
+'''text
 ========================================================================
                  Infinite Loop: task_pcg_all_in_one
 ========================================================================
