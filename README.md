@@ -61,7 +61,7 @@ By avoiding FreeRTOS multi-threading primitives (Queues, Semaphores, Mutexes), t
                                |
                                v
        +-----------------------------------------------+
-       | 3. Serial Plotter Stream (UART @921600 Baud)  |
+       | 3. Serial Plotter Stream (UART @112500 Baud)  |
        |    - Formats: PCG:[scaled_val]  SYNC_OK:[1/0] |
        +-----------------------------------------------+
                                |
@@ -76,7 +76,7 @@ By avoiding FreeRTOS multi-threading primitives (Queues, Semaphores, Mutexes), t
 ## 📊 Data & Output Visualization
 
 ### 1. VS Code Serial Plotter
-Opening the Serial Plotter at **921600 Baud** displays two continuous channels:
+Opening the Serial Plotter at **112500 Baud** displays two continuous channels:
 * `PCG`: The acoustic heart waveform, cleanly scaled down by a factor of $\gg 12$ to properly fit the viewport dynamics.
 * `SYNC_OK`: A straight status line resting at `1`. If hardware clock drift or dropped samples occur, it immediately drops to `0`.
 
