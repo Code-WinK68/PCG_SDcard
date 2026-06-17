@@ -1,0 +1,2 @@
+source D:/Code/Update/build/bootloader/gdbinit/symbols
+source D:/Code/Update/build/bootloader/gdbinit/connect
